@@ -1,8 +1,9 @@
 # reviewr.nvim
 
 Neovim review tab (base | change | changed-files panel) whose comments go to a
-coding agent; `rex/reviewr/init.lua` is the Rex half (cmd+r). Paul uses Rex,
-not herdr. Keep the decisions below unless Paul changes them.
+coding agent; `rex/reviewr/init.lua` is the Rex half (cmd+r). The maintainer
+uses Rex, not herdr. Keep the decisions below unless the maintainer changes
+them.
 
 ## Settled decisions
 
@@ -61,10 +62,11 @@ not herdr. Keep the decisions below unless Paul changes them.
 
 - Test: `nvim --headless -u NONE -l tests/run.lua`. Add a spec with each
   behaviour change: spec behaviour and crash classes, not implementation details.
-- Also check UI changes live in Rex under Paul's full config: some failures only
-  show there (closing a tab of diff windows whose buffers wipe segfaulted
-  Neovim 0.12; hence `diffoff!` before `tabclose`). Use a separate Rex tab, close
-  what you open, and don't touch Paul's panes or reviews that hold comments.
+- Also check UI changes live in Rex under the maintainer's full config: some
+  failures only show there (closing a tab of diff windows whose buffers wipe
+  segfaulted Neovim 0.12; hence `diffoff!` before `tabclose`). Use a separate
+  Rex tab, close what you open, and don't touch the maintainer's panes or
+  reviews that hold comments.
 - Keep `README.md`, `doc/reviewr.txt`, `INSTALL.md` (written for agents) and
   `skills/reviewr-nvim/SKILL.md` in step with behaviour. Refresh the README
   screenshots when the UI they show changes.
@@ -72,8 +74,8 @@ not herdr. Keep the decisions below unless Paul changes them.
   then `nvim --headless "+Lazy! update reviewr.nvim" +qa` (bumps
   `~/.config/nvim/lazy-lock.json`) and `rex config reload` if `rex/` changed.
   Open reviews keep old code until reopened.
-- Commits are Paul Enz <paulsabana@gmail.com>, end-state messages, no Claude
-  attribution. User-facing copy (descriptions, prompts) has no em dashes.
+- Commits use the configured git identity, end-state messages, no
+  Claude attribution. User-facing copy (descriptions, prompts) has no em dashes.
 
 ## Screenshots
 
