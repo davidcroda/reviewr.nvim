@@ -79,8 +79,7 @@ them.
 - Keep `README.md`, `doc/reviewr.txt`, `INSTALL.md` (written for agents) and
   `skills/reviewr-nvim/SKILL.md` in step with behaviour. Refresh the README
   screenshots when the UI they show changes.
-- Land every change as: branch, PR, rebase-merge yourself (`gh pr merge
-  --rebase --admin`: a ruleset locks `main` to the owner), delete the branch,
+- Land every change as: branch, PR, rebase-merge yourself, delete the branch,
   then `nvim --headless "+Lazy! update reviewr.nvim" +qa` (bumps
   `~/.config/nvim/lazy-lock.json`) and `rex config reload` if `rex/` changed.
   Open reviews keep old code until reopened.
