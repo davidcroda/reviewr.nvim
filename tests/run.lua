@@ -668,7 +668,7 @@ test("baselines of closed terminals and removed worktrees are pruned; live ones 
 end)
 
 -- cmd+r, driven through a stand-in for Rex's Lua API.
-local function rex_toggle(blocks, foregrounds, focused)
+local function rex_toggle(blocks, foregrounds, focused, config)
   local calls = {}
   _G.rex = {
     session_id = "session:s",
@@ -682,6 +682,7 @@ local function rex_toggle(blocks, foregrounds, focused)
     exec = function(cmd) return cmd[3] .. "\n", "", 0 end,
   }
   local mod = dofile(plugin .. "/rex/reviewr/init.lua")
+  for k, v in pairs(config or {}) do mod.config[k] = v end
   mod.toggle({})
   _G.rex = nil
   return vim.tbl_filter(function(c) return c.method ~= "session.list_blocks" and c.method ~= "block.method" end, calls)
@@ -725,6 +726,28 @@ test("cmd+r elsewhere keeps one unpaired review per repository per window", func
   calls = rex_toggle({ { block_id = "block:T", window_id = "w" },
     { block_id = "block:V", label = "review", placement = "detached" } }, fg, "block:T")
   eq(calls[1].method, "session.new_split")
+  eq(calls[1].params.layout.block.label, "review")
+end)
+
+test("with window = true, cmd+r opens the review in its own window and jumps between the two", function()
+  local window = { window = true }
+  local fg = { ["block:A"] = { argv0 = "codex", cwd = "/repo" }, ["block:T"] = { argv0 = "fish", cwd = "/repo" },
+    ["block:U"] = { cwd = "/repo" } }
+  local calls = rex_toggle({ { block_id = "block:A", window_id = "w" } }, fg, "block:A", window)
+  eq(calls[1].method, "session.new_window")
+  eq(calls[1].params.layout.block.label, "review:block:A")
+  eq(calls[1].params.anchor_id, nil)
+  local review = { block_id = "block:R", label = "review:block:A", placement = "placed", window_id = "v" }
+  calls = rex_toggle({ { block_id = "block:A", window_id = "w" }, review }, fg, "block:A", window)
+  eq({ calls[1].method, calls[1].params.block_id }, { "session.focus_block", "block:R" })
+  calls = rex_toggle({ { block_id = "block:A", window_id = "w" }, review }, fg, "block:R", window)
+  eq({ calls[1].method, calls[1].params.block_id }, { "session.focus_block", "block:A" })
+  -- unpaired: one per repository, from any window
+  calls = rex_toggle({ { block_id = "block:T", window_id = "w" },
+    { block_id = "block:U", label = "review", placement = "placed", window_id = "v" } }, fg, "block:T", window)
+  eq({ calls[1].method, calls[1].params.block_id }, { "session.focus_block", "block:U" })
+  calls = rex_toggle({ { block_id = "block:T", window_id = "w" } }, fg, "block:T", window)
+  eq(calls[1].method, "session.new_window")
   eq(calls[1].params.layout.block.label, "review")
 end)
 

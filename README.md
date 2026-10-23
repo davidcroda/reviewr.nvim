@@ -54,6 +54,8 @@ With nothing to review, the review still opens and says so (`changed files (0)`)
 
 Pressed in an agent's terminal, cmd+r opens a review **paired with that agent**: `s` sends to it without asking (`S` still offers the picker), the review follows only that agent's turns, and its turn baseline is its own. Run several agents, each with its own review beside it; with one git worktree per agent, each review's turn view shows exactly its agent's last turn. Agents sharing one working copy see each other's edits in their turn views, since git can't tell who wrote what. Pressed in any other terminal, cmd+r keeps one unpaired review per repository. `setup({ key = "...", command = "ReviewrOpen" })` changes the key or what is reviewed.
 
+`setup({ window = true })` opens the review in a window of its own instead of a split. cmd+r then jumps rather than hides: in a terminal it opens or switches to that terminal's review, and in a review it switches back to the agent's terminal, or to the terminal the review was last reached from. The window closes when the review is closed.
+
 ### Share Neovim's managed copy with Rex
 
 Rex loads the module straight from the copy your Neovim plugin manager installed, so both halves stay on the same version and the plugin manager updates them together. Install the plugin in Neovim first, then add this to Rex's config:

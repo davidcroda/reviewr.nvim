@@ -63,10 +63,13 @@ detached but keeps running, comments and all), and shows it again. Pressed in an
 agent's terminal, cmd+r pairs the review with that agent (block label
 `review:<agent block>`, `vim.g.reviewr_agent` inside Neovim): `s` sends to it
 and the turn view follows only its turns. Unpaired reviews are labelled
-`review`. Before opening one, look for a `review` block of
+`review`. With `setup({ window = true })` the review opens in a window of its
+own and cmd+r jumps between the review and its terminal instead of hiding it.
+Before opening one, look for a `review` block of
 the same repository in `rex api call session.list_blocks '{"session_id": "'"$REX_SESSION"'"}'`:
 if it is detached, show it with `session.move_block` beside your terminal
-rather than opening a second review.
+rather than opening a second review; if it is placed in another window, focus
+it with `session.focus_block`.
 
 In tmux: `tmux split-window -h -c "$repo" "nvim -c 'ReviewrOpen main feature'"`.
 Elsewhere, give the user the command to run.
